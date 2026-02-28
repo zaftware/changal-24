@@ -1,4 +1,4 @@
-# Changal Xabar
+# Changal 24
 
 Uz-latin AI/tech news aggregator: title + TL;DR + link.
 

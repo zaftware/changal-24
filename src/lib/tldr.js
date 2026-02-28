@@ -18,12 +18,13 @@ export async function localizeNews({ title = '', body = '' }) {
 Vazifa:
 - Kiruvchi AI/tech yangilik matnini uzbek lotiniga tarjima qil.
 - Sarlavhani ham tarjima qil.
-- 2-3 jumlalik xolis TL;DR yoz.
+- ftsec uslubiga yaqin qisqa format qil: 1 ta juda qisqa lead + 6-12 ta punkt.
 - Siyosiy kontent bo'lsa is_political=true qilib qaytar.
 
 Qoidalar:
 - Faqat faktlar, hech qanday tarafkashlik yo'q.
-- Mualliflik huquqini buzmaslik uchun matnni qayta ifodalab yoz.
+- Mualliflik huquqini buzmaslik uchun matnni qayta ifodalab yoz (copy-paste yo'q).
+- Har punkt "– " bilan boshlansin, qisqa va aniq bo'lsin.
 - Natija JSON bo'lsin: {"title_uz":"...","body_uz":"...","tldr_uz":"...","is_political":false}
 
 Sarlavha: ${title}

@@ -32,7 +32,7 @@ if (loc.is_political) {
 }
 
 const title = loc.title_uz || row.title;
-const text = `🦞 ${process.env.BRAND || 'Changal Xabar'}\n\n${title}\n\n${loc.tldr_uz}\n\n🔗 ${row.url}`;
+const text = `${process.env.BRAND || 'Changal 24'}: ${title}\n\n${loc.tldr_uz}\n\nManba: ${row.url}`;
 execFileSync('openclaw', ['message', 'send', '--channel', 'telegram', '--target', target, '--message', text], {
   stdio: 'inherit',
 });
