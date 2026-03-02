@@ -33,7 +33,7 @@ if (loc.is_political) {
 
 const title = loc.title_uz || row.title;
 const text = `${process.env.BRAND || 'Changal 24'}: ${title}\n\n${loc.tldr_uz}\n\nManba: ${row.url}`;
-execFileSync('openclaw', ['message', 'send', '--channel', 'telegram', '--target', target, '--message', text], {
+execFileSync('/home/zaff/.local/share/mise/installs/node/24.14.0/bin/openclaw', ['message', 'send', '--channel', 'telegram', '--target', target, '--message', text], {
   stdio: 'inherit',
 });
 

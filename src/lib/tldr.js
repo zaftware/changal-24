@@ -31,16 +31,20 @@ Sarlavha: ${title}
 Matn: ${body.slice(0, 6000)}
 `;
 
-  const r = await client.responses.create({ model, input: prompt });
-  const txt = (r.output_text || '').trim();
   try {
-    const parsed = JSON.parse(txt);
-    return {
-      title_uz: (parsed.title_uz || title || FALLBACK.title_uz).trim(),
-      body_uz: (parsed.body_uz || '').trim(),
-      tldr_uz: (parsed.tldr_uz || FALLBACK.tldr_uz).trim(),
-      is_political: !!parsed.is_political,
-    };
+    const r = await client.responses.create({ model, input: prompt });
+    const txt = (r.output_text || '').trim();
+    try {
+      const parsed = JSON.parse(txt);
+      return {
+        title_uz: (parsed.title_uz || title || FALLBACK.title_uz).trim(),
+        body_uz: (parsed.body_uz || '').trim(),
+        tldr_uz: (parsed.tldr_uz || FALLBACK.tldr_uz).trim(),
+        is_political: !!parsed.is_political,
+      };
+    } catch {
+      return { ...FALLBACK, title_uz: title || FALLBACK.title_uz };
+    }
   } catch {
     return { ...FALLBACK, title_uz: title || FALLBACK.title_uz };
   }

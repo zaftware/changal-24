@@ -49,7 +49,7 @@ app.get('/news/:id', (req, res) => {
 
 app.post('/api/publish-now', requireAdmin, (_req, res) => {
   execFile('/home/zaff/.local/share/mise/installs/node/24.14.0/bin/node', ['src/jobs/publish.js'], {
-    cwd: '/home/zaff/.openclaw/workspace/changal-24',
+    cwd: process.cwd(),
     env: process.env,
   }, (err, stdout, stderr) => {
     if (err) return res.status(500).json({ ok: false, error: stderr || err.message });
@@ -63,8 +63,8 @@ app.post('/api/post-custom', requireAdmin, (req, res) => {
   const target = process.env.TELEGRAM_TARGET;
   if (!target) return res.status(500).json({ error: 'telegram_target_missing' });
 
-  execFile('openclaw', ['message', 'send', '--channel', 'telegram', '--target', target, '--message', text], {
-    cwd: '/home/zaff/.openclaw/workspace/changal-24',
+  execFile('/home/zaff/.local/share/mise/installs/node/24.14.0/bin/openclaw', ['message', 'send', '--channel', 'telegram', '--target', target, '--message', text], {
+    cwd: process.cwd(),
     env: process.env,
   }, (err, stdout, stderr) => {
     if (err) return res.status(500).json({ ok: false, error: stderr || err.message });
