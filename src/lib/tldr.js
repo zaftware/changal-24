@@ -23,7 +23,7 @@ function extractJsonText(s = '') {
 function normalizeOutput(parsed) {
   const body = String(parsed?.body_uz || '').trim();
   const tldr = String(parsed?.tldr_uz || '').trim();
-  const normalizedTldr = bulletCount(tldr) >= 3 ? tldr : (bulletCount(body) >= 3 ? body : tldr);
+  const normalizedTldr = bulletCount(tldr) >= 1 ? tldr : (bulletCount(body) >= 1 ? body : tldr);
   const out = {
     title_uz: cleanText(parsed?.title_uz || ''),
     body_uz: cleanText(body),
@@ -31,9 +31,7 @@ function normalizeOutput(parsed) {
     is_political: !!parsed?.is_political,
   };
 
-  if (!out.tldr_uz || BAD_FALLBACK_RE.test(out.tldr_uz) || out.tldr_uz.length < 120 || bulletCount(out.tldr_uz) < 3) {
-    return null;
-  }
+  if (!out.tldr_uz || BAD_FALLBACK_RE.test(out.tldr_uz)) return null;
   return out;
 }
 

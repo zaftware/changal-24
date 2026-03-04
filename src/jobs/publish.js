@@ -47,17 +47,6 @@ function sourceNameFromUrl(rawUrl = '') {
   }
 }
 
-function isGoodFormat(loc) {
-  if (!loc || !loc.tldr_uz) return false;
-  const t = String(loc.tldr_uz).trim();
-  if (t.length < 120) return false;
-  const bullets = (t.match(/^\s*–\s+/gm) || []).length;
-  if (bullets < 3) return false;
-  if (/Qisqa:\s*manba yangiligini tekshirib ko‘ring\.?/i.test(t)) return false;
-  return true;
-}
-
-
 const row = db
   .prepare(`SELECT * FROM posts WHERE published_to_tg=0 AND url NOT LIKE 'https://t.me/%' ORDER BY score DESC, id DESC LIMIT 1`)
   .get();
@@ -68,14 +57,9 @@ if (!row) {
 
 const loc = await localizeNews({ title: row.title, body: row.body });
 
-if (!isGoodFormat(loc)) {
-  db.prepare(`UPDATE posts SET published_to_tg=-2, title_uz=?, body_uz=?, tldr_uz=? WHERE id=?`).run(
-    loc?.title_uz || row.title,
-    loc?.body_uz || '',
-    loc?.tldr_uz || '',
-    row.id
-  );
-  console.log('skip_bad_format', row.id);
+if (!loc) {
+  db.prepare(`UPDATE posts SET published_to_tg=-2 WHERE id=?`).run(row.id);
+  console.log('skip_no_loc', row.id);
   process.exit(0);
 }
 
