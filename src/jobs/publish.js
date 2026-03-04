@@ -47,11 +47,14 @@ function sourceNameFromUrl(rawUrl = '') {
   }
 }
 
-const row = db
-  .prepare(`SELECT * FROM posts WHERE published_to_tg=0 AND url NOT LIKE 'https://t.me/%' ORDER BY score DESC, id DESC LIMIT 1`)
-  .get();
+const targetId = process.argv[2] ? parseInt(process.argv[2], 10) : null;
+
+const row = targetId
+  ? db.prepare(`SELECT * FROM posts WHERE id=? AND published_to_tg=0`).get(targetId)
+  : db.prepare(`SELECT * FROM posts WHERE published_to_tg=0 AND url NOT LIKE 'https://t.me/%' ORDER BY score DESC, id DESC LIMIT 1`).get();
+
 if (!row) {
-  console.log('nothing_to_publish');
+  console.log('nothing_to_publish', targetId ?? 'auto');
   process.exit(0);
 }
 

@@ -19,7 +19,7 @@ function requireAdmin(req, res, next) {
 app.get('/api/news', (_req, res) => {
   const rows = db
     .prepare(
-      `SELECT id,title,title_uz,url,source_url,tldr_uz,is_political,published_at,score FROM posts WHERE is_political=0 ORDER BY id DESC LIMIT 100`
+      `SELECT id,title,title_uz,url,source_url,tldr_uz,published_at FROM posts WHERE published_to_tg=1 ORDER BY id DESC LIMIT 100`
     )
     .all();
   res.json(rows);
@@ -45,6 +45,27 @@ app.get('/news/:id', (req, res) => {
   const title = row.title_uz || row.title || 'Yangilik';
   const body = (row.body_uz || row.tldr_uz || '').replace(/</g, '&lt;');
   res.send(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><style>body{font-family:Inter,system-ui;background:#0b0f14;color:#e9eef5;max-width:860px;margin:20px auto;padding:0 14px}a{color:#7cc4ff}.box{border:1px solid #1d2633;border-radius:12px;padding:14px;background:#111722;white-space:pre-wrap}</style></head><body><p><a href="/">← Orqaga</a></p><h1>${title}</h1><div class="box">${body}</div><p><a target="_blank" href="${row.url}">Asl manba</a></p></body></html>`);
+});
+
+app.get('/api/admin/pending', requireAdmin, (_req, res) => {
+  const rows = db
+    .prepare(
+      `SELECT id,title,url,source_url,score,tldr_uz FROM posts WHERE published_to_tg=0 AND url NOT LIKE 'https://t.me/%' ORDER BY score DESC, id DESC LIMIT 50`
+    )
+    .all();
+  res.json(rows);
+});
+
+app.post('/api/publish-post', requireAdmin, (req, res) => {
+  const id = parseInt(req.body?.id, 10);
+  if (!id) return res.status(400).json({ error: 'id_required' });
+  execFile(process.execPath, ['src/jobs/publish.js', String(id)], {
+    cwd: process.cwd(),
+    env: process.env,
+  }, (err, stdout, stderr) => {
+    if (err) return res.status(500).json({ ok: false, error: stderr || err.message });
+    res.json({ ok: true, output: stdout?.trim() || 'published' });
+  });
 });
 
 app.post('/api/publish-now', requireAdmin, (_req, res) => {
