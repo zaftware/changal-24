@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process';
+// deploy-test-2: no-op comment to verify webhook after source switch
 
 const CLAUDE_BIN = '/home/zaff/.local/bin/claude';
 
